@@ -1,43 +1,79 @@
-# Attendance Management System
+# 🎓 Attendance Management System
 
-A comprehensive web-based solution for managing attendance in educational institutions and organizations. Built with Python Flask, this system offers role-based access control, real-time attendance tracking, and detailed reporting.
+A web-based solution to efficiently manage student attendance, sections, faculty assignments, leave requests, and reports — all in one unified platform. Built using **Flask** for the backend and **HTML/CSS/JS** for the frontend, this project streamlines educational administration with role-based dashboards and secure access control.
 
-![Attendance Management System](static/img/readme-banner.png)
+---
 
-## Features
+## ✨ Features
 
-### Core Functionality
-- **Role-Based Access Control**: Different interfaces for administrators, faculty, and students
-- **Attendance Tracking**: Mark, update, and view attendance records
-- **Section Management**: Create and manage sections with assigned students, teachers, and courses
-- **Reporting**: Generate and export attendance reports in various formats
-- **Leave Management**: Request and approve leaves with proper documentation
+- 🔐 **User Authentication**  
+  Separate logins for Admins, Faculty, and Students.
 
-### User Experience
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
-- **Dark/Light Mode**: Choose between dark and light themes with a violet color scheme
-- **Intuitive Interface**: User-friendly design for easy navigation and operation
+- 🏫 **Section Management**  
+  Create and assign students, teachers, and courses to sections.
 
-## Technology Stack
+- 🧑‍🏫 **Faculty Dashboard**  
+  Mark attendance, manage assigned sections, view reports.
 
-- **Backend**: Python Flask
-- **Database**: SQLAlchemy with SQLite
-- **Frontend**: HTML, CSS, JavaScript, Bootstrap 5
-- **Authentication**: Flask-Login
-- **Form Handling**: Flask-WTF
-- **Data Export**: CSV, PDF
+- 🎓 **Student Dashboard**  
+  View personal attendance, submit leave requests.
 
-## Installation
+- 📅 **Leave Request System**  
+  Students can request leave; faculty/admin can approve or reject.
 
-### Prerequisites
-- Python 3.8 or higher
-- pip (Python package manager)
+- 📊 **Attendance Reports**  
+  Generate and export daily, weekly, or monthly reports by section or student.
 
-### Setup Instructions
+- 🧾 **Export Options**  
+  Download reports in CSV or PDF format.
+
+- 🎨 **Responsive UI**  
+  Sidebar navigation, toggle support, and a clean light/dark theme design.
+
+- 🛠️ **Role-Based Access Control**  
+  Permissions enforced based on user roles for added security.
+
+---
+
+## 📁 Project Structure
+
+```
+attendance-management-system/
+├── app.py                  # Main Flask application file (entry point)
+├── models.py               # Database models (SQLAlchemy)
+├── extensions.py           # Flask extension initializations (e.g., db, login_manager)
+│
+├── routes/                 # Route handlers, separated by user roles and features
+│   ├── admin.py            # Admin-specific routes (dashboard, user management)
+│   ├── faculty.py          # Faculty routes (mark attendance, reports)
+│   ├── student.py          # Student routes (view attendance, leave requests)
+│   └── section.py          # Routes for managing sections and assignments
+│
+├── static/                 # Frontend static files
+│   ├── css/                # Custom stylesheets (themes, layout)
+│   ├── js/                 # JavaScript files (e.g., sidebar toggle, form validation)
+│   └── img/                # Image assets (logos, backgrounds)
+│
+├── templates/              # HTML templates grouped by user role
+│   ├── admin/              # Admin dashboard and management templates
+│   ├── faculty/            # Faculty interface templates
+│   ├── student/            # Student interface templates
+│   └── section/            # Section management and assignment templates
+│
+├── utils/                  # Utility modules for common logic
+│   ├── export.py           # Report export utilities (PDF, Excel)
+│   └── helpers.py          # Reusable helper functions (e.g., date/time, filters)
+│
+└── requirements.txt        # Python dependencies list
+```
+
+---
+
+## ⚙️ Setup Instructions
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/attendance-management-system.git
+   https://github.com/manish12ys/Attendance-Management-System.git
    cd attendance-management-system
    ```
 
@@ -67,97 +103,34 @@ A comprehensive web-based solution for managing attendance in educational instit
    python app.py
    ```
 
-6. **Access the application**
-   Open your browser and navigate to `http://127.0.0.1:5000`
-
-## Default Credentials
-
-The system comes with a default admin account for initial setup:
-
-- **Email**: admin@example.com
-- **Password**: admin123
-
-> **Important**: Change these credentials immediately after first login for security purposes.
-
-## Usage Guide
-
-### Administrator
-- Manage users, courses, and sections
-- View and generate attendance reports
-- Approve leave requests
-- Configure system settings
-
-### Faculty
-- Mark attendance for assigned courses
-- View attendance statistics
-- Manage assigned sections
-- Submit leave requests
-
-### Student
-- View personal attendance records
-- Check attendance statistics
-- Submit leave requests
-
-## Project Structure
-
-```
-attendance-management-system/
-├── app.py                  # Main application file
-├── models.py               # Database models
-├── extensions.py           # Flask extensions
-├── routes/                 # Route handlers
-│   ├── admin.py            # Admin routes
-│   ├── faculty.py          # Faculty routes
-│   ├── student.py          # Student routes
-│   └── section.py          # Section management routes
-├── static/                 # Static files
-│   ├── css/                # CSS files
-│   ├── js/                 # JavaScript files
-│   └── img/                # Images
-├── templates/              # HTML templates
-│   ├── admin/              # Admin templates
-│   ├── faculty/            # Faculty templates
-│   ├── student/            # Student templates
-│   └── section/            # Section templates
-├── utils/                  # Utility functions
-│   ├── export.py           # Export utilities
-│   └── helpers.py          # Helper functions
-└── requirements.txt        # Project dependencies
-```
-
-## Customization
-
-### Themes
-The system supports both light and dark modes with a violet color scheme. You can customize the colors by modifying the `themes.css` file in the `static/css` directory.
-
-### Adding New Features
-The modular structure makes it easy to add new features:
-1. Create new routes in the appropriate route file
-2. Add corresponding templates in the templates directory
-3. Update the navigation menu to include the new feature
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgements
-
-- [Flask](https://flask.palletsprojects.com/)
-- [SQLAlchemy](https://www.sqlalchemy.org/)
-- [Bootstrap](https://getbootstrap.com/)
-- [Font Awesome](https://fontawesome.com/)
+6. **Access the application**  
+   Open your browser and navigate to:  
+   `http://127.0.0.1:5000`
 
 ---
 
-Developed with ❤️ for educational institutions and organizations.
-# Attendance-Management-System
+## 🔐 Default Admin Credentials
+
+Use the following credentials for the first login:
+
+- **Email**: `admin@example.com`  
+- **Password**: `admin123`
+
+> ⚠️ **Important:** Change the default admin credentials after first login.
+
+---
+
+## 📌 Future Enhancements
+
+- ✅ Section-wise attendance analytics (charts)
+---
+
+## 🧑‍💻 Technologies Used
+
+- **Backend**: Python, Flask, SQLAlchemy  
+- **Frontend**: HTML, CSS, JavaScript  
+- **Database**: SQLite (easily upgradable to PostgreSQL/MySQL)  
+- **Extensions**: Flask-Login, Flask-WTF, Flask-Migrate (optional)
+
+
+---
