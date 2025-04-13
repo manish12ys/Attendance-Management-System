@@ -1,0 +1,297 @@
+/* Enhanced Table Styles for Attendance Management System */
+
+/* Table container with shadow and rounded corners */
+.table-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(123, 31, 162, 0.1);
+    margin-bottom: 2rem;
+}
+
+/* Table with improved styling */
+.table {
+    margin-bottom: 0 !important; /* Remove bottom margin when inside container */
+    background-color: transparent !important; /* Remove white background */
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* Improved font family */
+}
+
+/* Table header with gradient and improved text */
+.table thead th {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--table-header-text);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    padding: 16px 20px;
+    border: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* Add text shadow for better readability */
+}
+
+/* First and last header cells with rounded corners */
+.table thead th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.table thead th:last-child {
+    border-top-right-radius: 12px;
+}
+
+/* Table cells with improved styling */
+.table td {
+    border-top: 1px solid var(--table-border-color);
+    padding: 15px 20px;
+    vertical-align: middle;
+    background-color: transparent !important; /* Remove white background */
+    font-weight: 500; /* Slightly bolder text */
+}
+
+/* Striped rows with subtle background */
+.table tbody tr:nth-of-type(odd) {
+    background-color: var(--table-stripe-bg);
+}
+
+/* Even rows with transparent background */
+.table tbody tr:nth-of-type(even) {
+    background-color: transparent;
+}
+
+/* Hover effect on rows */
+.table tbody tr:hover {
+    background-color: var(--table-hover-bg);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(123, 31, 162, 0.1);
+    transition: all 0.2s ease;
+}
+
+/* Status cells with badges */
+.table td .badge {
+    padding: 0.5em 0.8em;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Action buttons in tables */
+.table .btn-action {
+    padding: 0.4rem 0.6rem;
+    margin: 0.15rem;
+    border-radius: 6px;
+}
+
+/* Table footer with subtle background */
+.table tfoot {
+    background-color: var(--table-stripe-bg);
+    font-weight: 600;
+}
+
+.table tfoot td {
+    border-top: 2px solid var(--table-border-color);
+}
+
+/* Responsive tables */
+.table-responsive {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Dark mode specific table styles */
+[data-theme="dark"] .table {
+    color: var(--text-light);
+    background-color: transparent !important;
+}
+
+[data-theme="dark"] .table thead th {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--table-header-text);
+    border-bottom: none;
+}
+
+[data-theme="dark"] .table td {
+    border-color: var(--table-border-color);
+    background-color: transparent !important;
+    color: var(--text-light);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Add subtle text shadow for better readability */
+}
+
+/* Table caption with improved styling */
+.table caption {
+    padding: 12px 20px;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-align: left;
+    caption-side: top;
+    background-color: var(--card-bg-light);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border: 1px solid var(--table-border-color);
+    border-bottom: none;
+}
+
+/* Table with caption */
+.table-with-caption {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+/* Compact tables */
+.table-sm th,
+.table-sm td {
+    padding: 10px 15px;
+}
+
+/* Bordered tables */
+.table-bordered {
+    border: 1px solid var(--table-border-color);
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid var(--table-border-color);
+}
+
+/* Borderless tables */
+.table-borderless th,
+.table-borderless td,
+.table-borderless thead th,
+.table-borderless tbody + tbody {
+    border: 0;
+}
+
+/* Table with fixed layout */
+.table-fixed {
+    table-layout: fixed;
+}
+
+/* Table cell with truncated text */
+.table-cell-truncate {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Table row with active state */
+.table tbody tr.active {
+    background-color: rgba(123, 31, 162, 0.1);
+}
+
+/* Table row with selected state */
+.table tbody tr.selected {
+    background-color: rgba(123, 31, 162, 0.2);
+}
+
+/* Table cell with centered content */
+.table .text-center {
+    text-align: center;
+}
+
+/* Table cell with right-aligned content */
+.table .text-right {
+    text-align: right;
+}
+
+/* Table cell with left-aligned content */
+.table .text-left {
+    text-align: left;
+}
+
+/* Table cell with nowrap content */
+.table .text-nowrap {
+    white-space: nowrap;
+}
+
+/* Table cell with truncated content */
+.table .text-truncate {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Table cell with primary color */
+.table .text-primary {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Table cell with success color */
+.table .text-success {
+    color: var(--success-color);
+    font-weight: 600;
+}
+
+/* Table cell with danger color */
+.table .text-danger {
+    color: var(--danger-color);
+    font-weight: 600;
+}
+
+/* Table cell with warning color */
+.table .text-warning {
+    color: var(--warning-color);
+    font-weight: 600;
+}
+
+/* Table cell with info color */
+.table .text-info {
+    color: var(--info-color);
+    font-weight: 600;
+}
+
+/* Table cell with muted color */
+.table .text-muted {
+    color: #6c757d;
+}
+
+/* Table cell with light color */
+.table .text-light {
+    color: #f8f9fa;
+}
+
+/* Table cell with dark color */
+.table .text-dark {
+    color: #343a40;
+}
+
+/* Table cell with white color */
+.table .text-white {
+    color: #ffffff;
+}
+
+/* Table cell with black color */
+.table .text-black {
+    color: #000000;
+}
+
+/* Student name styling */
+.student-name {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Course name styling */
+.course-name {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Date styling */
+.date-cell {
+    font-family: 'Consolas', 'Courier New', monospace;
+    letter-spacing: 0.5px;
+}
+
+/* Status styling - enhanced */
+.status-present {
+    color: var(--success-color);
+    font-weight: 600;
+}
+
+.status-absent {
+    color: var(--danger-color);
+    font-weight: 600;
+}
+
+.status-late {
+    color: var(--warning-color);
+    font-weight: 600;
+}

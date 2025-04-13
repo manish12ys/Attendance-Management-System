@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Attendance Management System{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dark-mode-fixes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/button-fixes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table-fixes.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        {% if current_user.is_authenticated %}
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>Attendance System</h3>
+            </div>
+            <ul class="list-unstyled components">
+                {% if current_user.role == 'admin' %}
+                <li>
+                    <a href="{{ url_for('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.manage_users') }}"><i class="fas fa-users"></i> Manage Users</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.manage_courses') }}"><i class="fas fa-book"></i> Manage Courses</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.manage_sections') }}"><i class="fas fa-layer-group"></i> Manage Sections</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('section.dashboard') }}"><i class="fas fa-users"></i> Section Dashboard</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.reports') }}"><i class="fas fa-chart-bar"></i> Reports</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin.manage_leaves') }}"><i class="fas fa-calendar-alt"></i> Leave Requests</a>
+                </li>
+                {% elif current_user.role == 'faculty' %}
+                <li>
+                    <a href="{{ url_for('faculty.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" class="dropdown-toggle" id="courseDropdown">
+                        <i class="fas fa-book"></i> Courses
+                    </a>
+                    <ul class="collapse list-unstyled" id="courseSubmenu">
+                        {% for course in current_user.courses %}
+                        <li>
+                            <a href="{{ url_for('faculty.view_course', course_id=course.id) }}">{{ course.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li>
+                    <a href="{{ url_for('section.dashboard') }}"><i class="fas fa-users"></i> Section Dashboard</a>
+                </li>
+                <script>
+                    document.getElementById('courseDropdown').addEventListener('click', function() {
+                        document.getElementById('courseSubmenu').classList.toggle('show');
+                    });
+                </script>
+                {% elif current_user.role == 'student' %}
+                <li>
+                    <a href="{{ url_for('student.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('student.view_attendance') }}"><i class="fas fa-clipboard-check"></i> My Attendance</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('student.leave_requests') }}"><i class="fas fa-calendar-alt"></i> Leave Requests</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('section.dashboard') }}"><i class="fas fa-users"></i> Section Dashboard</a>
+                </li>
+                {% endif %}
+                <li>
+                    <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+            <div class="theme-toggle">
+                <button class="theme-toggle-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </nav>
+        {% endif %}
+
+        <div id="content" class="{% if current_user.is_authenticated %}with-sidebar{% endif %}">
+            {% if current_user.is_authenticated %}
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        <span>Toggle Sidebar</span>
+                    </button>
+                    <div class="d-flex align-items-center">
+                        <div class="user-info me-3">
+                            <span>Welcome, {{ current_user.name }}</span>
+                        </div>
+                        <div class="theme-toggle-navbar">
+                            <button class="theme-toggle-btn btn btn-sm btn-outline-secondary" aria-label="Toggle Dark Mode">
+                                <i class="fas fa-moon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            {% else %}
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="{{ url_for('index') }}">Attendance Management System</a>
+                    <div class="d-flex">
+                        <div class="theme-toggle-navbar">
+                            <button class="theme-toggle-btn btn btn-sm btn-outline-secondary" aria-label="Toggle Dark Mode">
+                                <i class="fas fa-moon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            {% endif %}
+
+            <div class="container mt-4">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+</body>
+</html>

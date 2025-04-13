@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+
+{% block title %}Course Reports - Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="faculty-reports">
+    <div class="page-header">
+        <h1>Attendance Reports for {{ course.name }}</h1>
+        <div class="header-actions">
+            <a href="{{ url_for('faculty.dashboard') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <a href="{{ url_for('faculty.view_course', course_id=course.id) }}" class="btn btn-info">
+                <i class="fas fa-eye"></i> View Course
+            </a>
+        </div>
+    </div>
+
+    <div class="report-info card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Course:</h5>
+                    <p>{{ course.name }} ({{ course.code }})</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Faculty:</h5>
+                    <p>{{ current_user.name }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Total Students:</h5>
+                    <p>{{ student_stats|length }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="report-actions mb-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Export Options</h5>
+                        <div class="d-flex gap-2">
+                            <a href="#" class="btn btn-primary" onclick="window.print()">
+                                <i class="fas fa-print"></i> Print Report
+                            </a>
+                            <a href="{{ url_for('export_attendance_csv', course_id=course.id) }}" class="btn btn-success">
+                                <i class="fas fa-file-csv"></i> Export CSV
+                            </a>
+                            <a href="{{ url_for('export_attendance_pdf', course_id=course.id) }}" class="btn btn-danger">
+                                <i class="fas fa-file-pdf"></i> Export PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Attendance Summary</h5>
+                        <div class="attendance-summary">
+                            <div class="summary-item text-success">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Present: {{ student_stats|sum(attribute='present_count') }}</span>
+                            </div>
+                            <div class="summary-item text-danger">
+                                <i class="fas fa-times-circle"></i>
+                                <span>Absent: {{ student_stats|sum(attribute='absent_count') }}</span>
+                            </div>
+                            <div class="summary-item text-warning">
+                                <i class="fas fa-clock"></i>
+                                <span>Late: {{ student_stats|sum(attribute='late_count') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="attendance-data">
+        <div class="card">
+            <div class="card-header">
+                <h5>Student Attendance Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Total Classes</th>
+                                <th>Present</th>
+                                <th>Absent</th>
+                                <th>Late</th>
+                                <th>Attendance %</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in student_stats %}
+                            <tr>
+                                <td class="student-name">{{ stat.student.name }}</td>
+                                <td>{{ stat.total_classes }}</td>
+                                <td class="text-success">{{ stat.present_count }}</td>
+                                <td class="text-danger">{{ stat.absent_count }}</td>
+                                <td class="text-warning">{{ stat.late_count }}</td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar {% if stat.attendance_percentage >= 75 %}bg-success{% elif stat.attendance_percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {{ stat.attendance_percentage }}%;" 
+                                             aria-valuenow="{{ stat.attendance_percentage }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                            {{ stat.attendance_percentage|round(1) }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if stat.attendance_percentage >= 75 %}
+                                    <span class="badge bg-success">Good</span>
+                                    {% elif stat.attendance_percentage >= 60 %}
+                                    <span class="badge bg-warning">Average</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Poor</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="attendance-charts mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Attendance Visualization</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <canvas id="attendanceChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <canvas id="studentComparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Attendance Overview Chart
+        const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+        const attendanceChart = new Chart(attendanceCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Present', 'Absent', 'Late'],
+                datasets: [{
+                    data: [
+                        {{ student_stats|sum(attribute='present_count') }},
+                        {{ student_stats|sum(attribute='absent_count') }},
+                        {{ student_stats|sum(attribute='late_count') }}
+                    ],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.7)',
+                        'rgba(220, 53, 69, 0.7)',
+                        'rgba(255, 193, 7, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(220, 53, 69, 1)',
+                        'rgba(255, 193, 7, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Overall Attendance Distribution'
+                    }
+                }
+            }
+        });
+
+        // Student Comparison Chart
+        const studentCtx = document.getElementById('studentComparisonChart').getContext('2d');
+        const studentChart = new Chart(studentCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for stat in student_stats %}'{{ stat.student.name }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Attendance Percentage',
+                    data: [{% for stat in student_stats %}{{ stat.attendance_percentage|round(1) }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: [
+                        {% for stat in student_stats %}
+                        {% if stat.attendance_percentage >= 75 %}'rgba(40, 167, 69, 0.7)'{% elif stat.attendance_percentage >= 60 %}'rgba(255, 193, 7, 0.7)'{% else %}'rgba(220, 53, 69, 0.7)'{% endif %}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    ],
+                    borderColor: [
+                        {% for stat in student_stats %}
+                        {% if stat.attendance_percentage >= 75 %}'rgba(40, 167, 69, 1)'{% elif stat.attendance_percentage >= 60 %}'rgba(255, 193, 7, 1)'{% else %}'rgba(220, 53, 69, 1)'{% endif %}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Student Attendance Comparison'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

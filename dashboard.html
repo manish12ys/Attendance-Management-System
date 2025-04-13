@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Attendance Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/themes.css">
+    <link rel="stylesheet" href="/static/css/dark-mode-fixes.css">
+    <link rel="stylesheet" href="/static/css/button-fixes.css">
+    <link rel="stylesheet" href="/static/css/table-fixes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="wrapper">
+        
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>Attendance System</h3>
+            </div>
+            <ul class="list-unstyled components">
+                
+                <li>
+                    <a href="/admin/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="/admin/users"><i class="fas fa-users"></i> Manage Users</a>
+                </li>
+                <li>
+                    <a href="/admin/courses"><i class="fas fa-book"></i> Manage Courses</a>
+                </li>
+                <li>
+                    <a href="/admin/sections"><i class="fas fa-layer-group"></i> Manage Sections</a>
+                </li>
+                <li>
+                    <a href="/section/dashboard"><i class="fas fa-users"></i> Section Dashboard</a>
+                </li>
+                <li>
+                    <a href="/admin/reports"><i class="fas fa-chart-bar"></i> Reports</a>
+                </li>
+                <li>
+                    <a href="/admin/leaves"><i class="fas fa-calendar-alt"></i> Leave Requests</a>
+                </li>
+                
+                <li>
+                    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+            <div class="theme-toggle">
+                <button class="theme-toggle-btn" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </nav>
+        
+
+        <div id="content" class="with-sidebar">
+            
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        <span>Toggle Sidebar</span>
+                    </button>
+                    <div class="d-flex align-items-center">
+                        <div class="user-info me-3">
+                            <span>Welcome, Admin User</span>
+                        </div>
+                        <div class="theme-toggle-navbar">
+                            <button class="theme-toggle-btn btn btn-sm btn-outline-secondary" aria-label="Toggle Dark Mode">
+                                <i class="fas fa-moon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            
+
+            <div class="container mt-4">
+                
+                    
+                
+
+                
+<div class="admin-dashboard">
+    <h1>Admin Dashboard</h1>
+
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Users</h3>
+                <p class="stat-value">6</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Students</h3>
+                <p class="stat-value">2</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Faculty</h3>
+                <p class="stat-value">2</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Courses</h3>
+                <p class="stat-value">1</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Pending Leaves</h3>
+                <p class="stat-value">0</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Sections</h3>
+                <p class="stat-value">1</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="recent-activity">
+        <h2>Recent Attendance</h2>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Course</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Marked By</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="action-buttons">
+            <a href="/admin/users/add" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Add User
+            </a>
+            <a href="/admin/courses/add" class="btn btn-success">
+                <i class="fas fa-plus-circle"></i> Add Course
+            </a>
+            <a href="/admin/reports" class="btn btn-info">
+                <i class="fas fa-chart-bar"></i> Generate Reports
+            </a>
+            <a href="/admin/leaves" class="btn btn-warning">
+                <i class="fas fa-calendar-check"></i> Review Leave Requests
+            </a>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/theme.js"></script>
+</body>
+</html>
