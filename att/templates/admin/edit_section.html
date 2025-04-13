@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Section - Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="edit-section">
+    <div class="page-header">
+        <h1>Edit Section</h1>
+        <a href="{{ url_for('admin.manage_sections') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Sections
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('admin.edit_section', section_id=section.id) }}">
+                <div class="form-group">
+                    <label for="name">Section Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ section.name }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ section.description }}</textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Update Section</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <h1>Admin Dashboard</h1>
+
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Users</h3>
+                <p class="stat-value">{{ total_users }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Students</h3>
+                <p class="stat-value">{{ total_students }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Faculty</h3>
+                <p class="stat-value">{{ total_faculty }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Courses</h3>
+                <p class="stat-value">{{ total_courses }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Pending Leaves</h3>
+                <p class="stat-value">{{ pending_leaves }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Sections</h3>
+                <p class="stat-value">{{ total_sections }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="recent-activity">
+        <h2>Recent Attendance</h2>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Course</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Marked By</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attendance in recent_attendance %}
+                    <tr>
+                        <td class="student-name">{{ attendance.user.name if attendance.user else 'Unknown' }}</td>
+                        <td class="course-name">{{ attendance.course.name if attendance.course else 'Unknown' }}</td>
+                        <td class="date-cell">{{ attendance.date.strftime('%d-%m-%Y') }}</td>
+                        <td>
+                            <span class="badge {% if attendance.status == 'present' %}badge-success status-present{% elif attendance.status == 'absent' %}badge-danger status-absent{% else %}badge-warning status-late{% endif %}">
+                                {{ attendance.status }}
+                            </span>
+                        </td>
+                        <td class="text-primary">{{ attendance.marked_by_user.name if attendance.marked_by_user else 'Unknown' }}</td>
+                        <td class="date-cell">{{ attendance.marked_at.strftime('%H:%M') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="action-buttons">
+            <a href="{{ url_for('admin.add_user') }}" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Add User
+            </a>
+            <a href="{{ url_for('admin.add_course') }}" class="btn btn-success">
+                <i class="fas fa-plus-circle"></i> Add Course
+            </a>
+            <a href="{{ url_for('admin.reports') }}" class="btn btn-info">
+                <i class="fas fa-chart-bar"></i> Generate Reports
+            </a>
+            <a href="{{ url_for('admin.manage_leaves') }}" class="btn btn-warning">
+                <i class="fas fa-calendar-check"></i> Review Leave Requests
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

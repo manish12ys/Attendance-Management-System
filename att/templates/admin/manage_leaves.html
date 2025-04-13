@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Leave Requests - Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="manage-leaves">
+    <div class="page-header">
+        <h1>Manage Leave Requests</h1>
+    </div>
+
+    <div class="leave-filters mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="text" id="leaveSearch" class="form-control" placeholder="Search by student name...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <select id="statusFilter" class="form-control">
+                        <option value="all">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="date" id="dateFilter" class="form-control" placeholder="Filter by date">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped" id="leavesTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Duration</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Submitted On</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for leave in leave_requests %}
+                <tr data-status="{{ leave.status }}">
+                    <td>{{ leave.id }}</td>
+                    <td>{{ leave.user.name }}</td>
+                    <td>{{ leave.start_date.strftime('%d-%m-%Y') }}</td>
+                    <td>{{ leave.end_date.strftime('%d-%m-%Y') }}</td>
+                    <td>{{ (leave.end_date - leave.start_date).days + 1 }} day(s)</td>
+                    <td>
+                        <button class="btn btn-sm btn-link view-reason" data-reason="{{ leave.reason }}">
+                            View Reason
+                        </button>
+                    </td>
+                    <td>
+                        <span class="badge {% if leave.status == 'approved' %}badge-success{% elif leave.status == 'rejected' %}badge-danger{% else %}badge-warning{% endif %}">
+                            {{ leave.status }}
+                        </span>
+                    </td>
+                    <td>{{ leave.created_at.strftime('%d-%m-%Y') }}</td>
+                    <td>
+                        {% if leave.status == 'pending' %}
+                        <form method="POST" action="{{ url_for('admin.process_leave', leave_id=leave.id, action='approve') }}" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-success">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('admin.process_leave', leave_id=leave.id, action='reject') }}" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </form>
+                        {% else %}
+                        <span class="text-muted">Processed by: {{ leave.approved_by_user.name }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- View Reason Modal -->
+    <div class="modal fade" id="viewReasonModal" tabindex="-1" role="dialog" aria-labelledby="viewReasonModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewReasonModalLabel">Leave Request Reason</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="leaveReason"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search functionality
+    document.getElementById('leaveSearch').addEventListener('keyup', function() {
+        const searchValue = this.value.toLowerCase();
+        const table = document.getElementById('leavesTable');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const studentName = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+
+            if (studentName.includes(searchValue)) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+    });
+
+    // Status filter
+    document.getElementById('statusFilter').addEventListener('change', function() {
+        const selectedStatus = this.value;
+        const rows = document.querySelectorAll('#leavesTable tbody tr');
+
+        rows.forEach(row => {
+            if (selectedStatus === 'all' || row.getAttribute('data-status') === selectedStatus) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+    // Date filter
+    document.getElementById('dateFilter').addEventListener('change', function() {
+        const selectedDate = this.value;
+        const table = document.getElementById('leavesTable');
+        const rows = table.getElementsByTagName('tr');
+
+        if (!selectedDate) {
+            // Show all rows if no date is selected
+            for (let i = 1; i < rows.length; i++) {
+                rows[i].style.display = '';
+            }
+            return;
+        }
+
+        for (let i = 1; i < rows.length; i++) {
+            const startDate = rows[i].getElementsByTagName('td')[2].textContent;
+            const endDate = rows[i].getElementsByTagName('td')[3].textContent;
+
+            // Convert dates to comparable format
+            const startDateObj = new Date(startDate.split('-').reverse().join('-'));
+            const endDateObj = new Date(endDate.split('-').reverse().join('-'));
+            const filterDateObj = new Date(selectedDate);
+
+            if (filterDateObj >= startDateObj && filterDateObj <= endDateObj) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+    });
+
+    // View reason modal
+    const viewReasonButtons = document.querySelectorAll('.view-reason');
+    viewReasonButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const reason = this.getAttribute('data-reason');
+            document.getElementById('leaveReason').textContent = reason;
+            const modal = new bootstrap.Modal(document.getElementById('viewReasonModal'));
+            modal.show();
+        });
+    });
+</script>
+{% endblock %}

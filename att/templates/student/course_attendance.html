@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.name }} Attendance - Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="course-attendance">
+    <div class="page-header">
+        <h1>{{ course.name }} ({{ course.code }}) Attendance</h1>
+        <a href="{{ url_for('student.view_attendance') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to All Courses
+        </a>
+    </div>
+    
+    <div class="attendance-summary card mb-4">
+        <div class="card-header">
+            <h3>Attendance Summary</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="attendance-chart">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Attendance Rate</h3>
+                                <p class="stat-value">{{ attendance_percentage|round(1) }}%</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Present</h3>
+                                <p class="stat-value">{{ present_count }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Absent</h3>
+                                <p class="stat-value">{{ absent_count }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Late</h3>
+                                <p class="stat-value">{{ late_count }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Classes</h3>
+                                <p class="stat-value">{{ total_classes }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="attendance-details card">
+        <div class="card-header">
+            <h3>Attendance Records</h3>
+        </div>
+        <div class="card-body">
+            {% if attendance_records %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Marked By</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance_records %}
+                        <tr>
+                            <td>{{ record.date.strftime('%d-%m-%Y') }}</td>
+                            <td>
+                                <span class="badge {% if record.status == 'present' %}badge-success{% elif record.status == 'absent' %}badge-danger{% else %}badge-warning{% endif %}">
+                                    {{ record.status }}
+                                </span>
+                            </td>
+                            <td>{{ record.marked_by_user.name }}</td>
+                            <td>{{ record.marked_at.strftime('%H:%M') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <p>No attendance records found for this course.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="attendance-trends card mt-4">
+        <div class="card-header">
+            <h3>Attendance Trends</h3>
+        </div>
+        <div class="card-body">
+            <div class="attendance-trend-chart">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Attendance pie chart
+        const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+        const attendanceChart = new Chart(attendanceCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Present', 'Absent', 'Late'],
+                datasets: [{
+                    data: [{{ present_count }}, {{ absent_count }}, {{ late_count }}],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(255, 205, 86, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 205, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Attendance Distribution'
+                    }
+                }
+            }
+        });
+        
+        // Attendance trend chart (last 10 classes)
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        
+        // Prepare data for trend chart
+        const records = [
+            {% for record in attendance_records[:10] %}
+                {
+                    date: '{{ record.date.strftime("%d-%m-%Y") }}',
+                    status: '{{ record.status }}'
+                },
+            {% endfor %}
+        ];
+        
+        // Convert status to numeric value for chart
+        const statusValues = records.map(record => {
+            if (record.status === 'present') return 2;
+            if (record.status === 'late') return 1;
+            return 0; // absent
+        });
+        
+        const trendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: records.map(record => record.date),
+                datasets: [{
+                    label: 'Attendance Status',
+                    data: statusValues,
+                    backgroundColor: 'rgba(106, 27, 154, 0.2)',
+                    borderColor: 'rgba(106, 27, 154, 1)',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 2,
+                        ticks: {
+                            stepSize: 1,
+                            callback: function(value) {
+                                if (value === 0) return 'Absent';
+                                if (value === 1) return 'Late';
+                                if (value === 2) return 'Present';
+                                return '';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Recent Attendance Trend (Last 10 Classes)'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

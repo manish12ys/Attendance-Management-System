@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Courses - Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="manage-courses">
+    <div class="page-header">
+        <h1>Manage Courses</h1>
+        <a href="{{ url_for('admin.add_course') }}" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Add New Course
+        </a>
+    </div>
+
+    <div class="course-filters">
+        <div class="form-group">
+            <input type="text" id="courseSearch" class="form-control" placeholder="Search courses...">
+        </div>
+        <div class="form-group">
+            <select id="facultyFilter" class="form-control">
+                <option value="all">All Faculty</option>
+                {% for f in faculty %}
+                <option value="{{ f.id }}">{{ f.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped" id="coursesTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Code</th>
+                    <th>Faculty</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr data-faculty="{{ course.faculty_id }}">
+                    <td>{{ course.id }}</td>
+                    <td>{{ course.name }}</td>
+                    <td>{{ course.code }}</td>
+                    <td>
+                        {% for f in faculty %}
+                            {% if f.id == course.faculty_id %}
+                                {{ f.name }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ course.created_at.strftime('%d-%m-%Y') }}</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-info edit-course" data-id="{{ course.id }}">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button class="btn btn-sm btn-danger delete-course" data-id="{{ course.id }}" data-name="{{ course.name }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Delete Course Modal -->
+    <div class="modal fade" id="deleteCourseModal" tabindex="-1" role="dialog" aria-labelledby="deleteCourseModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCourseModalLabel">Confirm Delete</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete <span id="courseName"></span>?</p>
+                    <p class="text-danger">This action cannot be undone and will remove all attendance records for this course.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form id="deleteCourseForm" method="POST">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search functionality
+    document.getElementById('courseSearch').addEventListener('keyup', function() {
+        const searchValue = this.value.toLowerCase();
+        const table = document.getElementById('coursesTable');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const name = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+            const code = rows[i].getElementsByTagName('td')[2].textContent.toLowerCase();
+
+            if (name.includes(searchValue) || code.includes(searchValue)) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+    });
+
+    // Faculty filter
+    document.getElementById('facultyFilter').addEventListener('change', function() {
+        const selectedFaculty = this.value;
+        const rows = document.querySelectorAll('#coursesTable tbody tr');
+
+        rows.forEach(row => {
+            if (selectedFaculty === 'all' || row.getAttribute('data-faculty') === selectedFaculty) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+    // Delete course modal
+    const deleteButtons = document.querySelectorAll('.delete-course');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const courseId = this.getAttribute('data-id');
+            const courseName = this.getAttribute('data-name');
+
+            document.getElementById('courseName').textContent = courseName;
+            document.getElementById('deleteCourseForm').action = "/admin/courses/delete/" + courseId;
+
+            const modal = new bootstrap.Modal(document.getElementById('deleteCourseModal'));
+            modal.show();
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,112 @@
+/* Additional Button Fixes for Dark Mode */
+
+/* Make button text more visible in dark mode */
+[data-theme="dark"] .btn {
+    letter-spacing: 1px; /* Increased letter spacing for better readability */
+}
+
+/* Primary button in dark mode */
+[data-theme="dark"] .btn-primary {
+    color: #000000; /* Black text for maximum contrast */
+    font-weight: 800; /* Extra bold text */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Light text shadow for better readability */
+}
+
+/* Secondary button in dark mode */
+[data-theme="dark"] .btn-secondary {
+    color: #000000; /* Black text for maximum contrast */
+    font-weight: 800; /* Extra bold text */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Light text shadow for better readability */
+}
+
+/* Success button in dark mode */
+[data-theme="dark"] .btn-success {
+    color: #000000; /* Black text for maximum contrast */
+    font-weight: 800; /* Extra bold text */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Light text shadow for better readability */
+}
+
+/* Danger button in dark mode */
+[data-theme="dark"] .btn-danger {
+    color: #000000; /* Black text for maximum contrast */
+    font-weight: 800; /* Extra bold text */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Light text shadow for better readability */
+}
+
+/* Info button in dark mode */
+[data-theme="dark"] .btn-info {
+    color: #000000; /* Black text for maximum contrast */
+    font-weight: 800; /* Extra bold text */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Light text shadow for better readability */
+}
+
+/* Warning button in dark mode */
+[data-theme="dark"] .btn-warning {
+    color: #000000; /* Black text for maximum contrast */
+    font-weight: 800; /* Extra bold text */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Light text shadow for better readability */
+}
+
+/* Outline buttons in dark mode */
+[data-theme="dark"] .btn-outline-primary,
+[data-theme="dark"] .btn-outline-secondary,
+[data-theme="dark"] .btn-outline-success,
+[data-theme="dark"] .btn-outline-danger,
+[data-theme="dark"] .btn-outline-info,
+[data-theme="dark"] .btn-outline-warning {
+    border-width: 2px; /* Thicker border */
+    font-weight: 700; /* Bold text */
+}
+
+/* Button hover effects in dark mode */
+[data-theme="dark"] .btn:hover {
+    transform: translateY(-3px); /* Slightly more pronounced lift effect */
+    box-shadow: 0 6px 12px rgba(187, 134, 252, 0.3); /* Enhanced shadow with violet tint */
+}
+
+/* Button active state in dark mode */
+[data-theme="dark"] .btn:active {
+    transform: translateY(1px); /* Press effect */
+    box-shadow: 0 2px 5px rgba(187, 134, 252, 0.2); /* Reduced shadow when pressed */
+}
+
+/* Button focus state in dark mode */
+[data-theme="dark"] .btn:focus {
+    box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.4); /* Focus ring with violet tint */
+}
+
+/* Badge buttons in dark mode */
+[data-theme="dark"] .badge {
+    font-weight: 700; /* Bolder text */
+    letter-spacing: 0.5px; /* Increased letter spacing */
+}
+
+/* Badge success in dark mode */
+[data-theme="dark"] .badge-success {
+    color: #000000; /* Black text for maximum contrast */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Light text shadow for better readability */
+}
+
+/* Badge warning in dark mode */
+[data-theme="dark"] .badge-warning {
+    color: #000000; /* Black text for maximum contrast */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Light text shadow for better readability */
+}
+
+/* Badge danger in dark mode */
+[data-theme="dark"] .badge-danger {
+    color: #000000; /* Black text for maximum contrast */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Light text shadow for better readability */
+}
+
+/* Badge info in dark mode */
+[data-theme="dark"] .badge-info {
+    color: #000000; /* Black text for maximum contrast */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Light text shadow for better readability */
+}
+
+/* Badge primary in dark mode */
+[data-theme="dark"] .badge-primary {
+    color: #000000; /* Black text for maximum contrast */
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Light text shadow for better readability */
+}

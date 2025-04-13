@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Attendance - {{ course.name }} - Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="edit-attendance">
+    <div class="page-header">
+        <h1>Edit Attendance - {{ course.name }}</h1>
+        <a href="{{ url_for('faculty.view_course', course_id=course.id) }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Course
+        </a>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Select Date</h3>
+        </div>
+        <div class="card-body">
+            {% if attendance_dates %}
+            <form id="dateSelectForm" method="GET" action="{{ url_for('faculty.edit_attendance_date', course_id=course.id) }}">
+                <div class="form-group">
+                    <label for="attendance_date">Select a date to edit attendance:</label>
+                    <select class="form-control" id="attendance_date" name="date" required>
+                        <option value="">Select Date</option>
+                        {% for date in attendance_dates %}
+                        <option value="{{ date.strftime('%Y-%m-%d') }}">{{ date.strftime('%d-%m-%Y') }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Edit Attendance</button>
+            </form>
+            {% else %}
+            <div class="alert alert-info">
+                <p>No attendance records found for this course. Please mark attendance first.</p>
+                <a href="{{ url_for('faculty.mark_attendance', course_id=course.id) }}" class="btn btn-primary">
+                    <i class="fas fa-clipboard-check"></i> Mark Attendance
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3>Attendance History</h3>
+        </div>
+        <div class="card-body">
+            {% if attendance_dates %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Total Students</th>
+                            <th>Present</th>
+                            <th>Absent</th>
+                            <th>Late</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for date in attendance_dates %}
+                        <tr>
+                            <td>{{ date.strftime('%d-%m-%Y') }}</td>
+                            <td id="total-{{ date.strftime('%Y-%m-%d') }}">Loading...</td>
+                            <td id="present-{{ date.strftime('%Y-%m-%d') }}">Loading...</td>
+                            <td id="absent-{{ date.strftime('%Y-%m-%d') }}">Loading...</td>
+                            <td id="late-{{ date.strftime('%Y-%m-%d') }}">Loading...</td>
+                            <td>
+                                <a href="{{ url_for('faculty.edit_attendance_date', course_id=course.id, date=date.strftime('%Y-%m-%d')) }}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{{ url_for('faculty.view_attendance', course_id=course.id, date=date.strftime('%Y-%m-%d')) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>No attendance records found for this course.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to load attendance statistics for each date
+    async function loadAttendanceStats() {
+        {% for date in attendance_dates %}
+        try {
+            // In a real implementation, you would make an AJAX call to get the statistics
+            // For now, we'll just simulate it with placeholder values
+            document.getElementById('total-{{ date.strftime("%Y-%m-%d") }}').textContent = '25';
+            document.getElementById('present-{{ date.strftime("%Y-%m-%d") }}').textContent = '20';
+            document.getElementById('absent-{{ date.strftime("%Y-%m-%d") }}').textContent = '3';
+            document.getElementById('late-{{ date.strftime("%Y-%m-%d") }}').textContent = '2';
+        } catch (error) {
+            console.error('Error loading stats for {{ date.strftime("%Y-%m-%d") }}:', error);
+        }
+        {% endfor %}
+    }
+    
+    // Load stats when page loads
+    document.addEventListener('DOMContentLoaded', loadAttendanceStats);
+    
+    // Redirect to edit page when date is selected
+    document.getElementById('attendance_date').addEventListener('change', function() {
+        if (this.value) {
+            window.location.href = "{{ url_for('faculty.edit_attendance_date', course_id=course.id) }}".replace('edit_date', 'edit') + '?date=' + this.value;
+        }
+    });
+</script>
+{% endblock %}
