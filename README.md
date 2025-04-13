@@ -37,7 +37,7 @@ A comprehensive web-based solution for managing attendance in educational instit
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/attendance-management-system.git
+   git clone https://github.com/manish12ys/Attendance-Management-System.git
    cd attendance-management-system
    ```
 
