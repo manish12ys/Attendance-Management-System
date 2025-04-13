@@ -37,7 +37,7 @@ A comprehensive web-based solution for managing attendance in educational instit
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/manish12ys/Attendance-Management-System.git
+   git clone https://github.com/yourusername/attendance-management-system.git
    cd attendance-management-system
    ```
 
@@ -146,7 +146,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## License
 
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgements
 
